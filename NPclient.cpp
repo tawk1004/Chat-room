@@ -39,17 +39,7 @@ int main(int argc,char** argv){
 	server.sin_family = AF_INET;
 	server.sin_addr = *((struct in_addr *)he->h_addr);
 	server.sin_port = htons(atoi(argv[2]));
-	
-	/*if(inet_pton(AF_INET,host->h_addr,&server.sin_addr)<0){
-		cout<<"ERROR: socket address translated error."<<endl;
-		return 0;
-	}*/
-	/*
-	int host;
-	if ((host = getaddrinfo(argv[1], argv[2], &hints, &servinfo)) != 0) {
-    cout<<"getaddrinfo: "<< gai_strerror(host)<<endl;
-    return 1;
-	}*/
+
 	if(connect(clientfd,(struct sockaddr *)&server,sizeof(server))<0){
 		cout<<"ERROR: socket connection error."<<endl;
 		return 0;
