@@ -39,7 +39,7 @@ int main(int argc,char** argv){
 	severInfo.sin_addr.s_addr = INADDR_ANY;
 	severInfo.sin_port = htons(atoi(argv[1]));
 	
-	bind(listenfd,(struct sockaddr *)&severInfo,sizeof(severInfo));  //may be fault
+	bind(listenfd,(struct sockaddr *)&severInfo,sizeof(severInfo));
 	
 	if(listen(listenfd,100)<0) cout<<"listen socket error"<<endl;
 	
@@ -57,15 +57,9 @@ int main(int argc,char** argv){
 		client[i].fd = -1;
 	}
 	while(1){
-		/*forClient = accept(listenfd,(struct sockaddr *)&clientInfo,sizeof(clientInfo));
-		if(forClient<0) cout<<"accept error"<<endl;
-		*/
-	//	cout << maxfd << endl;
 		read_set = all_set;
 		ready_num = select(maxfd+1,&read_set,NULL,NULL,NULL);
 		
-		//new
-		//if(listenfd == -1) continue;
 		if(FD_ISSET(listenfd,&read_set)){
 			bzero(&clientInfo,sizeof(clientInfo));
 			socklen_t clientlen = sizeof(clientInfo);
@@ -85,9 +79,7 @@ int main(int argc,char** argv){
 				return 0;
 			}
 			FD_SET(client[i].fd,&all_set);
-			//ready_num++;
-			//FD_CLR(client[i],&read_set);
-			
+
 			if(connectfd>maxfd) maxfd = connectfd;
 			if(i>maxi) maxi = i;
 			
@@ -108,7 +100,7 @@ int main(int argc,char** argv){
 					write(client[j].fd,buffer,strlen(buffer));
 				}
 			}
-			//if(ready_num<=0) continue;
+
 		}
 		//new over
 		
@@ -116,9 +108,7 @@ int main(int argc,char** argv){
 		char recvwords[100];
 		char recvwords2[100];
 		for(i=0;i<=maxi;i++){
-		//	cout << client[i].fd << endl;
 			if((sockfd = client[i].fd)<0) {
-				//cout<<"error"<<endl;
 				continue;
 			}
 			if(FD_ISSET(sockfd,&read_set)){
@@ -126,8 +116,7 @@ int main(int argc,char** argv){
 				bzero(recvwords2,sizeof(recvwords2));
 				int recvlen = read(sockfd,recvwords,sizeof(recvwords));
 				if(recvlen<0) continue;
-				/*if(read(sockfd,recvwords,sizeof(recvwords))==0){ //someone offline
-					j=0;*/
+
 				else if(recvlen==0){
 					for(j=0;j<=maxi;j++){
 						if(FD_ISSET(client[j].fd,&all_set)){
@@ -178,7 +167,6 @@ int main(int argc,char** argv){
 					else if(!strcmp(command,"name")){ //name
 						temp = strtok(NULL," \n");
 						int change_name = 1;
-						//int j;
 						
 						if(strlen(temp)!=0){
 							bzero(buffer,sizeof(buffer));
@@ -347,12 +335,11 @@ int main(int argc,char** argv){
 									}
 								}
 							}
-							//cout << client[i].fd << endl;
+
 							FD_CLR(sockfd,&all_set);
 							close(sockfd);
 							client[i].fd = -1;
 							ready_num--;
-							//if(ready_num<=0) break;
 						}
 						else{
 							bzero(buffer,sizeof(buffer));
@@ -366,7 +353,7 @@ int main(int argc,char** argv){
 						write(client[i].fd,buffer,strlen(buffer));
 					}
 				}
-				//if(--ready_num<=0) break;
+
 			}
 		}
 		
